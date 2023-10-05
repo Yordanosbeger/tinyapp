@@ -4,6 +4,8 @@ const PORT = 3000; // default port 3000
 app.set("view engine", "ejs");
 
 app.use(express.urlencoded({ extended: true }));
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -70,6 +72,13 @@ app.post("/login", (req, res) => {
   res.redirect('/urls');
 });
 
+app.get("/urls", (req, res) => {
+  const templateVars = {
+    username: req.cookies["username"],
+    // ... any other vars
+  };
+  res.render("urls_index", templateVars);
+});
 
 app.get("/u/:id", (req, res) => {
   // const longURL = ...
