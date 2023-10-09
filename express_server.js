@@ -20,6 +20,15 @@ const generateSixRandomChars = function() {
   return randomString;
 };
 
+const getUserByEmail = (email) => {
+  for (const userId in users) {
+    if (users[userId].email === email) {
+      return users[userId];
+    }
+  }
+  return null;
+};
+
 // Database //
 
 const users = {
@@ -66,8 +75,13 @@ app.get("/u/:id", (req, res) => {
   res.redirect(longURL);
 });
 
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
+
 app.get("/register", (req, res) => {
-  const templateVars = { id: req.params.id, longURL: urlDatabase,username: req.cookies["username"]};
+  const templateVars = { id: req.params.id, longURL: urlDatabase,username: req.cookies["user_id"]};
   res.render("registration",templateVars);
 });
 
@@ -95,10 +109,42 @@ app.post("/urls/:id", (req, res) => {
 });
 
 app.post("/register", (req, res) =>{
-  
-  res.cookie('user_id', username);
-  res.redirect('/urls');
+  //res.cookie('user_id', username);
+  //res.redirect('/urls');
+  const { email, password } = req.body;
+
+  // Check if email or password are empty
+  if (!email || !password) {
+    res.status(400).send("Email and password cannot be empty.");
+    return;
+  }
+
+  // Check if the email is already in use
+  if (getUserByEmail(email)) {
+    res.status(400).send("Email is already registered.");
+    return;
+  }
+
+  // Generate a unique user ID
+  const user_id = generateSixRandomChars();
+
+  // Create a new user object
+  const newUser = {
+    id: user_id,
+    email,
+    password,
+  };
+
+  // Add the new user to the users object
+  users[user_id] = newUser;
+
+  // Set the user_id cookie
+  res.cookie("user_id", user_id);
+
+  // Redirect to the /urls page
+  res.redirect("/urls");
 });
+
 
 app.post("/login", (req, res) => {
   const { username } = req.body;
