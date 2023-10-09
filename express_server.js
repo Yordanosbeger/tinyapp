@@ -59,8 +59,12 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
+  if (!req.cookies["user_id"]) {
+    res.redirect("/login");
+  } else {
   const templateVars = { urls: urlDatabase, username: req.cookies["user_id"]};
   res.render("urls_new" , templateVars);
+  }
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -69,8 +73,13 @@ app.get("/urls/:id", (req, res) => {
  });
 
 app.get("/u/:id", (req, res) => {
-  
+  const shortURL = req.params.id;
+  const longURL = urlDatabase[shortURL];
+  if (!longURL) {
+    res.status(404).send("Short URL does not exist.");
+  } else {
   res.redirect(longURL);
+  }
 });
 
 app.get("/login", (req, res) => {
@@ -86,8 +95,12 @@ app.get("/register", (req, res) => {
 // Post Routes //
 
  app.post("/urls", (req, res) => {
+  if (!req.cookies["user_id"]) {
+    res.status(403).send("You need to be logged in to create a new URL.");
+  } else {
  console.log(req.body); 
   res.send("Ok"); 
+  }
 });
 
 app.post("/urls/:id/delete", (req, res) => {
