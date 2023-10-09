@@ -29,6 +29,16 @@ const getUserByEmail = (email) => {
   return null;
 };
 
+const urlsForUser = (id) => {
+  const userURLs = {};
+  for (const shortURL in urlDatabase) {
+    if (urlDatabase[shortURL].userID === id) {
+      userURLs[shortURL] = urlDatabase[shortURL];
+    }
+  }
+  return userURLs;
+};
+
 // Database //
 
 const users = {
@@ -47,15 +57,27 @@ const users = {
 };
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
+  b6UTxQ: {
+    longURL: "https://www.tsn.ca",
+    userID: "aJ48lW",
+  },
+  i3BoGr: {
+    longURL: "https://www.google.ca",
+    userID: "aJ48lW",
+  },
+  };
 
 // Get Routes //
 
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase, username: req.cookies["user_id"]};
-  res.render("urls_index", templateVars);
+  const userId = req.cookies["user_id"];
+  if (!userId) {
+    res.status(403).send("Please login or register.");
+  } else {
+    const userURLs = urlsForUser(userId);
+    const templateVars = { urls: urlDatabase, username: req.cookies["user_id"]};
+    res.render("urls_index", templateVars);
+  }
 });
 
 app.get("/urls/new", (req, res) => {
@@ -68,8 +90,17 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
+  const shortURL = req.params.id;
+  const userId = req.cookies["user_id"];
+  const userURLs = urlsForUser(userId);
+  if (!userId) {
+    res.status(403).send("Please login or register.");
+  } else if (!userURLs[shortURL]) {
+    res.status(403).send("You do not own this URL.");
+  } else {
  const templateVars = { id: req.params.id, longURL: urlDatabase,username: req.cookies["user_id"]};
   res.render("urls_show", templateVars);
+  }
  });
 
 app.get("/u/:id", (req, res) => {
@@ -104,16 +135,32 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/urls/:id/delete", (req, res) => {
-const url = req.params.id 
-delete urlDatabase[url];
-
-  res.redirect("/urls");
+  const shortURL = req.params.id;
+  const userId = req.cookies["user_id"];
+  const userURLs = urlsForUser(userId);
+  if (!userId) {
+    res.status(403).send("Please login or register.");
+  } else if (!userURLs[shortURL]) {
+    res.status(403).send("You do not own this URL.");
+  } else {
+    // Delete the URL logic
+    delete urlDatabase[shortURL];
+    res.redirect("/urls");
+  }
 });
 
 app.post("/urls/:id", (req, res) => {
-  const shortURL = generateSixRandomChars(); 
-  const updatedLongURL = req.body.longURL;
-  res.redirect(longURL);
+  const shortURL = req.params.id;
+  const userId = req.cookies["user_id"];
+  const userURLs = urlsForUser(userId);
+  if (!userId) {
+    res.status(403).send("Please login or register.");
+  } else if (!userURLs[shortURL]) {
+    res.status(403).send("You do not own this URL.");
+  } else {
+    // Update the URL logic
+    res.redirect(`/urls/${shortURL}`);
+  }
 });
 
 app.post("/register", (req, res) =>{
