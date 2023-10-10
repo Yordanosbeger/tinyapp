@@ -4,9 +4,11 @@ const cookieSession = require('cookie-session');
 const bcrypt = require("bcryptjs");
 const users = require("./database");
 const urlDatabase = require("./database");
-const { getUserByEmail, 
-        urlsForUser, 
-        generateRandomString,} = require('./helpers');
+const {
+  getUserByEmail,
+  urlsForUser, 
+  generateRandomString
+} = require('./helpers');
 
 const PORT = 3000; // default port 3000
 const app = express();
@@ -214,9 +216,9 @@ app.post("/logout", (req, res) => {
   res.redirect('/login');
 });
 
-// app.get("/urls.json", (req, res) => {
-//   res.json(urlDatabase);
-// });
+app.get("/urls.json", (req, res) => {
+  res.json(urlDatabase);
+});
 
 
 
