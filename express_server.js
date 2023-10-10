@@ -24,9 +24,8 @@ app.use(morgan("dev"));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 
-// Get Routes //
-
-app.get("/urls", (req, res) => {
+// Get Routes landing pages
+ app.get("/urls", (req, res) => {
   const user = users[req.session.userId];// Retrieve the user object using userId cookie value
    if (!user) {
     res.render("home", { user });
