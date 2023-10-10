@@ -5,6 +5,7 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
+const bcrypt = require("bcryptjs");
 
 // Functions //
 
@@ -181,12 +182,12 @@ app.post("/register", (req, res) =>{
 
   // Generate a unique user ID
   const user_id = generateSixRandomChars();
-
+  const hashedPassword = bcrypt.hashSync(password, 10);
   // Create a new user object
   const newUser = {
     id: user_id,
     email,
-    password,
+    password: hashedPassword,
   };
 
   // Add the new user to the users object
@@ -218,7 +219,7 @@ app.post("/login", (req, res) => {
   }
 
   // Check if the provided password matches the user's password
-  if (user.password !== password) {
+  if (!bcrypt.compareSync(user.password !== password)) {
     res.status(403).send("Incorrect password.");
     return;
   }
