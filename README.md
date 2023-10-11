@@ -1,6 +1,6 @@
 # My TinyApp Project
 
-A simple web application that does XYZ.
+A full stack web app built with Node and Express that allows users to shorten long URLs (à la bit.ly).
 
 ## Final Product
 

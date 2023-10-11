@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-success">
     <a class="navbar-brand" href="/urls">TinyApp</a>
@@ -16,15 +17,22 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <td>
-        <% if (typeof user !== 'undefined' && user) { %>
-        <a class="nav-item nav-link" href="/logout">Logout</a>
-        <% } else { %>
-        <a class="nav-item nav-link" href="/register">Register</a>
+        </div>
+        </div>
+        <div class="navbar-nav">
+        <% if (!user) { %>
         <a class="nav-item nav-link" href="/login">Login</a>
+        <a class="nav-item nav-link" href="/register">Register</a>
+        </div>
+        <% } else { %>
+          Logged in as:<%= user.email %>
+          <form class="form-inline" action="/logout" method="post">
+            <div class="form-group mb-2">
+              <button type="=submit" class="btn btn-outline-dark">Logout</button>
+            </div>
+          </form>
         <% } %>
-        </td>
-      </div>
-    </div>
-  </nav>
+        </div>
+    </nav>
 </header>
+</html>

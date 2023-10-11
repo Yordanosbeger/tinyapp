@@ -25,7 +25,19 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 
 // Get Routes landing pages
- app.get("/urls", (req, res) => {
+
+// GET /
+app.get('/', (req, res) => {
+  const user = users[req.session.userId];
+
+  if (user) {
+    res.redirect('/urls');
+  } else {
+    res.redirect('/login');
+  }
+});
+
+  app.get("/urls", (req, res) => {
   const user = users[req.session.userId];// Retrieve the user object using userId cookie value
    if (!user) {
     res.render("home", { user });
@@ -90,7 +102,7 @@ app.get("/register", (req, res) => {
   if(user){
     res.redirect('/urls')
   }else{
-  res.render("registration",{user:req.session.user});
+  res.render("register", {user:req.session.user});
   }
 });
 
@@ -155,21 +167,19 @@ app.post("/register", (req, res) =>{
   // Check if email or password are empty
 
   if (!email || !password) {
-    res.status(400).send("Email and password cannot be empty.");
-    return;
-  }
+    return res.status(400).send("Email and password cannot be empty.");
+    }
 
   // Check if the email is already in use
    const foundUser = getUserByEmail(email, users);
   if (foundUser) {
     return res.status(400).send("Email is already registered.");
     }
-
-    //hash the password
+ //hash the password
   const hashedPassword = bcrypt.hashSync(password, 10);
   console.log(hashedPassword);
   
-    // create a new user object with the hashed password
+  // create a new user object with the hashed password
   const userId = generateRandomString();
   users[userId] = {
     id: userId,
@@ -212,7 +222,7 @@ app.post("/login", (req, res) => {
 
 app.post("/logout", (req, res) => {
   req.session = null;
-  res.redirect('/login');
+  res.redirect('/');
 });
 
 app.get("/urls.json", (req, res) => {
