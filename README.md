@@ -1,39 +1,33 @@
-### TinyApp Project
+# TinyApp Project
 
-A full stack web app built with Node and Express that allows users to shorten long URLs (à la bit.ly).
+TinyApp is a full stack web application built with Node and Express that allows users to shorten long URLs (à la bit.ly).
 
 ## Final Product
 
 !["TinyApp"](images/tinyapp.png)
-!["TinyApp CreatTinyURL"](images/tinyapp2.png)
-!["TinyApp Login"](images/tinyapp_login.png)
-
-
-
+!["TinyApp_CreatTinyApp](images/tinyapp2.png)
+!["TinyApp_Login](images/tinyapp_login.png)
 ## Dependencies
+
 - Node.js
 - Express
 - EJS
-- bcrypt
+- bcryptjs
 - cookie-session
-
-## Usage
-
-1. Visit the application in your web browser.
-2. Create a new item by clicking the "New Item" button.
 
 ## Getting Started
 
-1. Install all dependencies (using the `npm install` command).
-2. Run the development web server using the `node express_server.js` command.
-3. Go to [localhost:8080](http://localhost:8080) in your browser.
+- Install all dependencies (using the `npm install` command).
+- Run the development web server using the `node express_server.js` command.
+- Go to [localhost:8080](http://localhost:8080)  in your browser.
 
-To start the project, run the following command:
-`npm start`
+- To start the project, run the following command:
+ 
+  `npm start`
 
-To test the project, run the following command: 
+- To test the project, run the following command: 
 
-`npm test`
+  `npm test`
 
 
 # How to use TinyApp
