@@ -10,7 +10,7 @@ const {
   generateRandomString
 } = require('./helpers');
 
-const PORT = 3000; // default port 3000
+const PORT = 8080; // default port 3000
 const app = express();
 ;
 
