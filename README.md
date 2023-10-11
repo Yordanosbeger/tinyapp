@@ -29,23 +29,20 @@ A full stack web app built with Node and Express that allows users to shorten lo
 3. Go to [localhost:8080](http://localhost:8080) in your browser.
 
 To start the project, run the following command:
-
-```bash
-
-npm start
+`npm start`
 
 To test the project, run the following command: 
 
-``` bash
+`npm test`
 
- npm test
 
- ## How to use TinyApp
- #Register/Login
+# How to use TinyApp
+ 
+## Register/Login:
  Users must be logged in to creat new links, view them, and edit them.
 click Register button , put on it email and password to register.
 
-##Creat New Links
+## Creat New Links
 Either click Creat a New Short Link in My URLs page,or Creat New URL you want to shorten.
 ##Edit or Delete Short Links 
 . In My URLs,you can delet any link you want.
