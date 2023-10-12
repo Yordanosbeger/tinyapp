@@ -202,9 +202,10 @@ app.post("/login", (req, res) => {
   if (!foundUser) {
     return res.status(403).send(" Invalid Email and password.");
     }
+    console.log(foundUser);
 
   // Check if the email exists in the users object
-  const user = getUserByEmail(email);
+  const user = getUserByEmail(email, users);
 
   if (!user) {
     res.status(403).send("User with this email does not exist.");
