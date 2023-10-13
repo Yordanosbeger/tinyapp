@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
 });
 
   app.get("/urls", (req, res) => {
-  const user = users[req.session.userId];// Retrieve the user object using userId cookie value
+  const user = users[req.session.userId]; 
    if (!user) {
     res.render("home", { user });
   } else {
@@ -78,12 +78,14 @@ app.get("/urls/:id", (req, res) => {
 });
 
 app.get("/u/:id", (req, res) => {
-  const shortURL = req.params.id;
-  const longURL = urlDatabase[shortURL];
-  if (!longURL) {
-    res.status(404).send("Short URL does not exist.");
-  } else {
+  //const shortURL = req.params.id;
+  //const longURL = urlDatabase[shortURL];
+  const { id } = req.params;
+  const longURL = urlDatabase[id].longURL;
+ if (longURL) {
   res.redirect(longURL);
+    } else {
+    res.status(404).send("<h1>Short URL not found.</h1>");
   }
 });
 
@@ -117,13 +119,11 @@ app.post("/urls", (req, res) => {
     const longURL  = req.body.longURL;
     const shortURL = generateRandomString();
 
-    
     urlDatabase[shortURL] = {
       longURL,
       userID: user.id
     };
-
-    res.redirect(`/urls/${shortURL}`);
+   res.redirect(`/urls/${shortURL}`);
   }
 });
 
@@ -133,9 +133,9 @@ app.post("/urls/:id", (req, res) => {
   const url = urlDatabase[req.params.id];
  
   if (!user) {
-    res.status(403).send("Please login or register.");
+    res.status(401).send('<h1> You must be logged in to update a URL.</h1> <a herf="/login">Login</a>');
   } else if (!url || url.userID !== user.id) {
-    res.status(403).send("You do not own this URL.");
+    res.status(403).send('<h1> You do not have permission to update this URL.</h1>');
   } else {
     url.longURL = req.body.longURL;
     res.redirect(`/urls`);
@@ -148,11 +148,11 @@ app.post("/urls/:id/delete", (req, res) => {
   const url = urlDatabase[req.params.id];
 
   if (!url) {
-    res.status(403).send("Please login or register.");
+    res.status(403).send( '<h1> URL not found </h1>');
   } else if (!user) {
-    res.status(403).send("You do not own this URL.");
+    res.status(403).send('<h1> Please login or register to delete URLs</h1><a href="/login">Login</a><br/><a href="/register">Register</a><br/>');
   } else if (url.userID !== user.id) {
-  res.status(403).send('You do not have permission to delete this URL');
+  res.status(403).send('<h1>You do not have permission to delete this URL</h1>');
   }else {
     // Delete the URL logic
     delete urlDatabase[req.params.id];
@@ -167,7 +167,7 @@ app.post("/register", (req, res) =>{
   // Check if email or password are empty
 
   if (!email || !password) {
-    return res.status(400).send("Email and password cannot be empty.");
+    return res.status(400).send("Email or password cannot be empty.");
     }
 
   // Check if the email is already in use
@@ -188,8 +188,7 @@ app.post("/register", (req, res) =>{
   };
 
   req.session.userId = userId;
-
-  // Redirect to the /urls page
+// Redirect to the /urls page
   res.redirect("/urls");
 });
 
@@ -200,7 +199,7 @@ app.post("/login", (req, res) => {
   // Check if email or password are empty
   const foundUser = getUserByEmail(email, users);
   if (!foundUser) {
-    return res.status(403).send(" Invalid Email and password.");
+    return res.status(403).send('<h3> Invalid Email and Password.</h3>');
     }
     console.log(foundUser);
 
@@ -208,13 +207,12 @@ app.post("/login", (req, res) => {
   const user = getUserByEmail(email, users);
 
   if (!user) {
-    res.status(403).send("User with this email does not exist.");
-    return;
-  }
+   return res.status(403).send('<h3>User with this email does not exist.</h3>');
+    }
   const isPasswordCorrect = bcrypt.compareSync(password, foundUser.password);
   // Check if the provided password matches the user's password
   if (!isPasswordCorrect) {
-   return res.status(403).send("Incorrect password.");
+   //return res.status(403).send("Incorrect password.");
     
   }
   req.session.userId = foundUser.id;
@@ -223,14 +221,12 @@ app.post("/login", (req, res) => {
 
 app.post("/logout", (req, res) => {
   req.session = null;
-  res.redirect('/');
+  res.redirect("/login");
 });
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
-
-
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
