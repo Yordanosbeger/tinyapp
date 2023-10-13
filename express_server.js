@@ -12,7 +12,6 @@ const {
 
 const PORT = 8080; // default port 3000
 const app = express();
-;
 
 app.use(cookieSession({
   name: "session",
@@ -26,7 +25,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // Get Routes landing pages
 
-// GET /
 app.get('/', (req, res) => {
   const user = users[req.session.userId];
 
@@ -49,7 +47,6 @@ app.get('/', (req, res) => {
     };
     res.render("urls_index", templateVars);
   }
-
 });
 
 app.get("/urls/new", (req, res) => {
@@ -98,7 +95,6 @@ app.get("/login", (req, res) => {
   }
 });
 
-
 app.get("/register", (req, res) => {
   const user = users[req.session.userId];
   if(user){
@@ -108,17 +104,15 @@ app.get("/register", (req, res) => {
   }
 });
 
-// Post Routes //
+// Post Routes 
 
- // POST /urls
-app.post("/urls", (req, res) => {
+ app.post("/urls", (req, res) => {
   const user = users[req.session.userId];
   if (!user) {
     res.status(403).send('<h1> You need to be logged in to shorten URLs.</h1><a href="/login">Login</a>');
   } else {
     const longURL  = req.body.longURL;
     const shortURL = generateRandomString();
-
     urlDatabase[shortURL] = {
       longURL,
       userID: user.id
@@ -126,7 +120,6 @@ app.post("/urls", (req, res) => {
    res.redirect(`/urls/${shortURL}`);
   }
 });
-
 
 app.post("/urls/:id", (req, res) => {
   const user = users[req.session.userId];
@@ -139,9 +132,8 @@ app.post("/urls/:id", (req, res) => {
   } else {
     url.longURL = req.body.longURL;
     res.redirect(`/urls`);
-
-  }
-});
+   }
+  });
 
 app.post("/urls/:id/delete", (req, res) => {
   const user = users[req.session.userId];
@@ -158,7 +150,6 @@ app.post("/urls/:id/delete", (req, res) => {
     delete urlDatabase[req.params.id];
     res.redirect("/urls");
   }
-
 });
 
 app.post("/register", (req, res) =>{
@@ -167,13 +158,13 @@ app.post("/register", (req, res) =>{
   // Check if email or password are empty
 
   if (!email || !password) {
-    return res.status(400).send("Email or password cannot be empty.");
+    return res.status(400).send('<h3>Email or password cannot be empty.</h3>');
     }
 
   // Check if the email is already in use
    const foundUser = getUserByEmail(email, users);
   if (foundUser) {
-    return res.status(400).send("Email is already registered.");
+    return res.status(400).send('<h3>Email is already registered.</h3>');
     }
  //hash the password
   const hashedPassword = bcrypt.hashSync(password, 10);
@@ -191,7 +182,6 @@ app.post("/register", (req, res) =>{
 // Redirect to the /urls page
   res.redirect("/urls");
 });
-
 
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
